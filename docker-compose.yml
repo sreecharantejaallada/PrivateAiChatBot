@@ -1,0 +1,26 @@
+version: "3.9"
+services:
+  telegram-bot:
+    build: .
+    environment:
+      - TELEGRAM_TOKEN=${TELEGRAM_TOKEN}
+      - BOT_USERNAME=@edoAlabot
+      - ALLOWED_USER_IDS=${ALLOWED_USER_IDS}   # e.g. "123456,987654"
+      - OLLAMA_URL=http://ollama:11434/api/generate
+      - OLLAMA_MODEL=llama3.2:latest
+      - LOG_LEVEL=INFO
+    ports:
+      - "8443:8443"   # only needed for webhook mode
+    depends_on:
+      - ollama
+
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-data:/root/.ollama
+    restart: unless-stopped
+
+volumes:
+  ollama-data:
